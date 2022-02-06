@@ -51,21 +51,27 @@
 							</li>
 							{% if app.user %}
 								<li>
+									<a href="{{ path('account')}}">
+										<i class="fas fa-user"></i>
+										<span>{{app.user.firstname}}</span>
+									</a>
+								</li>
+								<li>
 									<a href="{{ path('app_logout')}}">
-										<i class="ti-user"></i>
+										<i class="fas fa-sign-out-alt"></i>
 										<span>Logout</span>
 									</a>
 								</li>
 							{% else %}
 								<li>
 									<a href="{{ path('app_login')}}">
-										<i class="ti-user"></i>
+										<i class="fas fa-sign-in-alt"></i>
 										<span>Login</span>
 									</a>
 								</li>
 								<li>
 									<a href="{{ path('app_register')}}">
-										<i class="ti-user"></i>
+										<i class="fas fa-user-plus"></i>
 										<span>Register</span>
 									</a>
 								</li>

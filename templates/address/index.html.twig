@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Address index{% endblock %}
+
+{% block body %}
+    <h1>Address index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Fullname</th>
+                <th>Company</th>
+                <th>Address</th>
+                <th>Address_details</th>
+                <th>Phone</th>
+                <th>City</th>
+                <th>PostalCode</th>
+                <th>Country</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for address in addresses %}
+            <tr>
+                <td>{{ address.id }}</td>
+                <td>{{ address.fullname }}</td>
+                <td>{{ address.company }}</td>
+                <td>{{ address.address }}</td>
+                <td>{{ address.addressDetails }}</td>
+                <td>{{ address.phone }}</td>
+                <td>{{ address.city }}</td>
+                <td>{{ address.postalCode }}</td>
+                <td>{{ address.country }}</td>
+                <td>
+                    <a href="{{ path('address_show', {'id': address.id}) }}"><button class="btn btn-success p-2" style="text-align:center"><i class="fas fa-eye"></i>
+    
+</button></a>
+                    <a href="{{ path('address_edit', {'id': address.id}) }}"><button class="btn btn-info p-2" style="text-align:center"><i class="fas fa-edit"></i>
+    
+</button></a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="10">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="mt-5 mb-5">
+    <a class="btn btn-fill-out btn-block" href="{{ path('address_new') }}">Create new</a><br>
+    <a class="btn btn-fill-out btn-block" href="{{ path('account') }}">Back to account</a>
+    </div>
+{% endblock %}
