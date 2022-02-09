@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,19 +61,9 @@ class Product
     private $isSpecialOffer= false;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Picture;
-
-    /**
      * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="products")
      */
     private $category;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=TagsProduct::class, mappedBy="product")
-     */
-    private $tagsProducts;
 
     /**
      * @ORM\OneToMany(targetEntity=RelatedProduct::class, mappedBy="product")
@@ -85,18 +76,44 @@ class Product
     private $reviewsProducts;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Size::class, mappedBy="product")
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="product", cascade={"persist", "remove"})
      */
-    private $sizes;
+    private $pictures;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $quantity;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $tags;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
 
     public function __construct()
     {
         $this->category = new ArrayCollection();
-        $this->tagsProducts = new ArrayCollection();
         $this->relatedProducts = new ArrayCollection();
         $this->reviewsProducts = new ArrayCollection();
-        $this->sizes = new ArrayCollection();
+        $this->pictures = new ArrayCollection();
+        $this->createdAt = new DateTime();
     }
+    public function __toString()
+    {
+        return $this->title;
+    }
+
 
     public function getId(): ?int
     {
@@ -199,18 +216,6 @@ class Product
         return $this;
     }
 
-    public function getPicture(): ?string
-    {
-        return $this->Picture;
-    }
-
-    public function setPicture(string $Picture): self
-    {
-        $this->Picture = $Picture;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Category[]
      */
@@ -231,33 +236,6 @@ class Product
     public function removeCategory(Category $category): self
     {
         $this->category->removeElement($category);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|TagsProduct[]
-     */
-    public function getTagsProducts(): Collection
-    {
-        return $this->tagsProducts;
-    }
-
-    public function addTagsProduct(TagsProduct $tagsProduct): self
-    {
-        if (!$this->tagsProducts->contains($tagsProduct)) {
-            $this->tagsProducts[] = $tagsProduct;
-            $tagsProduct->addProduct($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTagsProduct(TagsProduct $tagsProduct): self
-    {
-        if ($this->tagsProducts->removeElement($tagsProduct)) {
-            $tagsProduct->removeProduct($this);
-        }
 
         return $this;
     }
@@ -323,29 +301,82 @@ class Product
     }
 
     /**
-     * @return Collection|Size[]
+     * @return Collection|Picture[]
      */
-    public function getSizes(): Collection
+    public function getPictures(): Collection
     {
-        return $this->sizes;
+        return $this->pictures;
     }
 
-    public function addSize(Size $size): self
+    public function addPicture(Picture $picture): self
     {
-        if (!$this->sizes->contains($size)) {
-            $this->sizes[] = $size;
-            $size->addProduct($this);
+        if (!$this->pictures->contains($picture)) {
+            $this->pictures[] = $picture;
+            $picture->setProduct($this);
         }
 
         return $this;
     }
 
-    public function removeSize(Size $size): self
+    public function removePicture(Picture $picture): self
     {
-        if ($this->sizes->removeElement($size)) {
-            $size->removeProduct($this);
+        if ($this->pictures->removeElement($picture)) {
+            // set the owning side to null (unless already changed)
+            if ($picture->getProduct() === $this) {
+                $picture->setProduct(null);
+            }
         }
 
         return $this;
     }
+
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): self
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getTags(): ?string
+    {
+        return $this->tags;
+    }
+
+    public function setTags(?string $tags): self
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+   
 }
