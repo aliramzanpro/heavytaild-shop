@@ -100,7 +100,6 @@ class Product
     public function __construct()
     {
         $this->category = new ArrayCollection();
-        $this->relatedProducts = new ArrayCollection();
         $this->reviewsProducts = new ArrayCollection();
         $this->pictures = new ArrayCollection();
         $this->createdAt = new DateTime();
