@@ -19,13 +19,14 @@ class HomeController extends AbstractController
         $productSpecialOffer = $repoProduct->findByIsSpecialOffer(1);
         $productFeatured = $repoProduct->findByIsFeatured(1);
         $productNewArrival = $repoProduct->findByIsNewArrival(1);
+
         return $this->render('home/index.html.twig',[
 
             'products' => $products,
             'productBestSeller' => $productBestSeller,
             'productSpecialOffer' => $productSpecialOffer,
             'productFeatured' => $productFeatured,
-            'productNewArrival' => $productNewArrival, 
+            'productNewArrival' => $productNewArrival
       
         ] );
     }

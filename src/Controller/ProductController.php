@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Product;
-use App\Entity\Category;
 use App\Services\CartServices;
 use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,24 +14,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProductController extends AbstractController
 {
-    private $session;
-    private $productRepository;
-    public function __construct(SessionInterface $session, ProductRepository $productRepository)
-    {
-        $this->session = $session;
+    private $cartServices;
+    public function __construct(CartServices $cartServices, ProductRepository $productRepository){
+        $this->cartServices = $cartServices;
         $this->productRepository = $productRepository;
     }
-
     /**
      * @Route("/product/{slug}", name="product_details")
      */
-    public function show(?Product $product): Response
+    public function show(?Product $product, ProductRepository $productRepository ): Response
     {
+        $products = $this->productRepository->findALL();
+        
         if (!$product) {
             return $this->redirectToRoute('home');
         }
         return $this->render('product/single_product.html.twig', [
             'product' => $product,
+            'products' => $products,
         ]);
     }
 

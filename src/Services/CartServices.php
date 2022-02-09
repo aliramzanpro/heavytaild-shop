@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class CartServices{
     private $session;
     private $productRepository;
+    private $tva = 0.2;
+
     public function __construct(SessionInterface $session, ProductRepository $productRepository)
     {
         $this->session = $session;
@@ -34,6 +36,8 @@ class CartServices{
     public function updateCart($cart){
         
         $this->session->set('cart',$cart);
+        
+        $this->session->set('cartData', $this->getAllProductCart());
 
     }
 
@@ -83,18 +87,31 @@ class CartServices{
     public function getAllProductCart(){
         $cart = $this->getCart();
         $allProduct = [];
+        $quantity_cart = 0; 
+        $subTotal = 0;
+        
+
         foreach ($cart as $id => $quantity) {
             $product = $this->productRepository->find($id);
 
             if ($product) {
-                $allProduct[]=
+                $allProduct["products"][]=
                 [
                     "quantity" => $quantity,
                     "product" => $product
                 ];
+                $quantity_cart += $quantity;
+                $subTotal += $quantity * ($product->getPrice()/100);
             } else {
                 $this->removeFromCart($id);
             }
+            $allProduct['data']= [
+                "quantity_cart" => $quantity_cart,
+                "subTotalHT"=>round($quantity * ($product->getPrice()*(1-$this->tva)/100),2),
+                "taxe"=> round($subTotal*($this->tva),2),
+                "subTotalTTC" => round($subTotal,2),
+
+            ];
             
         }return $allProduct;
         

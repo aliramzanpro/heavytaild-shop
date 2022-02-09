@@ -23,7 +23,8 @@ class Picture
     private $url;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="pictures", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="pictures",cascade={"persist"})
+     * @ORM\JoinColumn(nullable=false)
      */
     private $product;
 

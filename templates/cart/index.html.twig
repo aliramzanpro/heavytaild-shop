@@ -26,10 +26,10 @@
 								</tr>
 							</thead>
 							<tbody>
-                            {% set subTotal = 0 %}
-								{% for element in cart %}
+                            
+								{% for element in cart.products %}
 									<tr>
-                                    {% set subTotal = subTotal + (element.quantity * element.product.price/100) %}
+                                    
 										<td class="product-thumbnail">
 											<a href="{{path('product_details',{'slug':element.product.slug})}}"><img src="{{element.product.pictures[0].url}}" alt="product1"></a>
 										</td>
@@ -46,7 +46,7 @@
 										</td>
 										<td class="product-subtotal cart-subtotal js-cartSubtotal" data-title="Total">${{element.quantity * element.product.price/100}}</td>
 										<td class="product-remove" data-title="Remove">
-											<a href="#">
+											<a href="{{path('removeallfromcart',{'id':element.product.id})}}">
 												<i class="ti-close"></i>
 											</a>
 										</td>
@@ -90,11 +90,11 @@
 								<tbody>
 									<tr>
 										<td class="cart_total_label">Subtotal</td>
-										<td class="cart_total_amount js-cartSubtotal">${{subTotal}}</td>
+										<td class="cart_total_amount js-cartSubtotal">${{ cart.data.subTotalHT }}</td>
 									</tr>
                                     <tr>
 										<td class="cart_total_label">Taxe</td>
-										<td class="cart_total_amount">${{subTotal * 0.2}}</td>
+										<td class="cart_total_amount">${{ cart.data.taxe }}</td>
 									</tr>
 									<tr>
 										<td class="cart_total_label">Shipping</td>
@@ -103,7 +103,7 @@
 									<tr>
 										<td class="cart_total_label">Total</td>
 										<td class="cart_total_amount js-cartSubtotal">
-											<strong>${{subTotal * 1.20}}</strong>
+											<strong>${{cart.data.subTotalTTC }}</strong>
 										</td>
 									</tr>
 								</tbody>

@@ -75,10 +75,11 @@ class Product
      */
     private $reviewsProducts;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="product", cascade={"persist", "remove"})
+  /**
+     * @ORM\OneToMany(targetEntity=Picture::class, mappedBy="product", orphanRemoval=true, cascade={"persist"})
      */
     private $pictures;
+    
 
     /**
      * @ORM\Column(type="integer")
@@ -112,6 +113,7 @@ class Product
     public function __toString()
     {
         return $this->title;
+        
     }
 
 
