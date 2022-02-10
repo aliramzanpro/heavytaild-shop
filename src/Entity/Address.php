@@ -63,6 +63,26 @@ class Address
      */
     private $user;
 
+
+    public function __toString()
+    {
+        $result = $this->fullname."[spr]";
+        if($this->getCompany()){
+            $result .= $this->company."[spr]";
+        }
+        $result .= $this->address."[spr]";
+        if($this->getAddressDetails()){
+            $result .= $this->address_details."[spr]";
+        }       
+        $result .= $this->postalCode." - ".$this->city."[spr]";
+        $result .= $this->country."[spr]";
+        $result .= "Phone : ".$this->phone."[spr]";
+
+        return $result;
+    
+        
+    }
+
     public function getId(): ?int
     {
         return $this->id;

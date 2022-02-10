@@ -4,18 +4,23 @@ namespace App\Controller;
 
 use App\Entity\Address;
 use App\Form\AddressType;
+use App\Services\CartServices;
 use App\Repository\AddressRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/address")
  */
 class AddressController extends AbstractController
 {
+    public function __construct(ProductRepository $productRepository){
+        $this->productRepository = $productRepository;
+    }
     /**
      * @Route("/", name="address_index", methods={"GET"})
      */
@@ -29,7 +34,7 @@ class AddressController extends AbstractController
     /**
      * @Route("/new", name="address_new", methods={"GET", "POST"})
      */
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CartServices $cartServices): Response
     {
         
         $address = new Address();
@@ -42,13 +47,20 @@ class AddressController extends AbstractController
             $entityManager->persist($address);
             $entityManager->flush();
 
+            if($cartServices->getAllProductCart()){
+                return $this->redirectToRoute('checkout');
+            }
+            
             $this->addFlash('address_message', 'Your address has been saved');
             return $this->redirectToRoute('account', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('address/new.html.twig', [
+        $products = $this->productRepository->findALL();
+        return $this->render('address/new.html.twig', [
             'address' => $address,
-            'form' => $form,
+            'form' => $form->createView(),
+            'products'=>$products 
+
         ]);
     }
 

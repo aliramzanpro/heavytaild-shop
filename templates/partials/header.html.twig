@@ -140,6 +140,8 @@
 						<a class="nav-link cart_trigger" href="#" data-toggle="dropdown">
 							<i class="linearicons-cart"></i>
 							<span class="cart_count">
+							
+					{% if app.user %}		
 								{% if app.session.get('cart') %}
 									{{app.session.get('cartData').data.quantity_cart}}
 								{% else %}
@@ -181,12 +183,13 @@
 										{{ app.session.get('cartData').data.subTotalTTC}}</p>
 									<p class="cart_buttons">
 										<a href="{{path('cart')}}" class="btn btn-fill-line rounded-0 view-cart">View Cart</a>
-										<a href="#" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
+										<a href="{{path('checkout')}}" class="btn btn-fill-out rounded-0 checkout">Checkout</a>
 									</p>
 								</div>
 							{% else %}
 								<li>Your cart is empty</li>
 							</ul>
+						{% endif %}
 						{% endif %}
 					</li>
 				</ul>

@@ -20,9 +20,11 @@ class CartServices{
     public function addToCart($id){
     
         $cart= $this->getCart();
+        
         if (isset($cart[$id])) {
             //product in cart 
             $cart[$id]++;
+            
         }else {
             //no product in cart 
             $cart[$id] = 1;

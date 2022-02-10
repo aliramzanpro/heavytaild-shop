@@ -43,6 +43,14 @@ class Carrier
      */
     private $updateAt;
 
+    public function __toString(){
+        $result = $this->name."[spr]";
+        $result .= $this->description."[spr]";
+        $result .= "Price: $".($this->price/100)."[spr]";
+        
+        return $result;
+    }
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
