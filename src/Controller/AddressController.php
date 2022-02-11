@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -18,8 +19,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  */
 class AddressController extends AbstractController
 {
-    public function __construct(ProductRepository $productRepository){
-        $this->productRepository = $productRepository;
+    
+    private $session;
+    public function __construct(ProductRepository $productRepository, SessionInterface $session){
+    $this->productRepository = $productRepository;
+    $this->session = $session;
     }
     /**
      * @Route("/", name="address_index", methods={"GET"})
@@ -75,13 +79,21 @@ class AddressController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            if ($this->session->get('checkout_data')) {
+                $data = $this->session->get('checkout_data');
+                $data['address'] = $address;
+                $this->session->set('checkout_data',$data);
+                return $this->redirectToRoute("checkout_confirm");
+                
+            }
             $this->addFlash('address_message', 'Your address has been updated');
             return $this->redirectToRoute('account', [], Response::HTTP_SEE_OTHER);
         }
-
+        $products = $this->productRepository->findALL();
         return $this->renderForm('address/edit.html.twig', [
             'address' => $address,
             'form' => $form,
+            'products'=>$products 
         ]);
     }
 

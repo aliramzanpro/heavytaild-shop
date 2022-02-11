@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout
+{% endblock %}
+
+{% block body %}
+	{{ include("partials/title-section.html.twig", {'name':'Checkout'}) }}
+	<div class="section checkout">
+		<div class="container">
+
+			<div class="row">
+				<div class="col-md-6">
+					<div class="heading_s1">
+						<h4>Verify your delivery Address</h4>
+
+						<div class="content">
+							{{ address | replace({'[spr]' : '<br>'}) | raw}}
+							<a href="{{ path('address_edit', {'id' : address.id })}}" class="btn btn-fill-out mt-1">Edit address</a>
+							<a href="{{ path('checkout')}}" class="btn btn-fill-out mt-1">Change address</a>
+						</div>
+
+					</div>
+					<div class="heading_s1">
+						<h4>Your choosen carrier</h4>
+						<div class="content">
+							{{ carrier  | replace({'[spr]' : '<br>'}) | raw }}
+							<a href="{{ path('checkout')}}" class="btn btn-fill-out mt-1">Change carrier</a>
+						</div>
+					</div>
+					{% if informations %}
+						<div class="heading_s1">
+							<h4>Additional information</h4>
+							<div class="form-group mb-0">
+								{{ informations }}
+							</div>
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="col-md-6">
+					<div class="order_review">
+						<div class="heading_s1">
+							<h4>Your Orders</h4>
+						</div>
+						<div class="table-responsive order_table">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>Product</th>
+										<th>Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for element in cart.products %}
+										<tr>
+											<td>
+												{{element.product.title}}
+												<span class="product-qty">x
+													{{element.quantity}}</span>
+											</td>
+											<td>$
+												{{element.product.price / 100}}
+											</td>
+										</tr>
+									{% endfor %}
+
+								</tbody>
+								<tfoot>
+									<tr>
+										<th>SubTotal (Without Tax)</th>
+										<td class="product-subtotal">${{ cart.data.subTotalHT }}</td>
+									</tr>
+									<tr>
+										<th>Tax</th>
+										<td class="product-subtotal">${{cart.data.taxe}}</td>
+									</tr>
+									<tr>
+										<th>SubTotal</th>
+										<td class="product-subtotal">${{ cart.data.subTotalTTC }}</td>
+									</tr>
+									<tr>
+										<th>Shipping ({{carrier.name}})</th>
+										<td class="product-subtotal">${{ carrier.price / 100 }}</td>
+									</tr>
+									<tr>
+										<th>Total</th>
+										<td class="product-subtotal">${{cart.data.subTotalTTC + carrier.price / 100}}</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div class="payment_method">
+							<div class="heading_s1">
+								<h4>Payment</h4>
+							</div>
+							<button type="submit" id="checkout-button" class="btn btn-fill-out btn-block">Pay</button>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+{% endblock %}
